@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class ObjectsGenerator : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject[] prefabItems;
+    public float time;
+    private void Start()
+    {
+        time = Time.time;
+    }
+    private void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+
 }
