@@ -198,12 +198,29 @@ public class PlayerScript : MonoBehaviour
         string msj = "Player {0} is moving in ({1}, {2}) ";
         Debug.Log(string.Format(msj, player_name, index_x, index_y));
     }
+    /*
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collided with other object");
-        PlaneObject.limit -= 1;
+        string msg = "Player: {0} collide with {1}";
+        //string msg_formated = string.Format(msg, name, other.gameObject.name);
+        string msg_formated;
+        if (other.gameObject.Equals( GameObject.FindGameObjectWithTag("Star").gameObject))
+        {
+            msg_formated = string.Format(msg, this.player_name, "Star");
+            ObjectsGenerator.RestStar();
+            
+        } else if (other.gameObject.Equals(GameObject.FindGameObjectWithTag("Speed").gameObject))
+        {
+            ObjectsGenerator.RestItem();
+            msg_formated = string.Format(msg, this.player_name, "Speed");
+        }else
+        {
+            msg_formated = string.Format(msg, this.player_name, "Nothing");
+        }
+        Debug.Log(msg_formated);
         Destroy(other.gameObject);
     }
+    */
 }
 
 /*
