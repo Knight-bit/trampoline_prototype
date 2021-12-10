@@ -1,31 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Variables;
+using TMPro;
 
 public class PlayerScript : MonoBehaviour
 {
 
     // Update is called once per frame
     int index_x, index_y, limit, movement_random;
-
-    float time_start, player_movement, stun;
-    
+    public int points = 0;
+    float time_start, stun;
+    float player_movement;
     Color color;
-    
+    public static bool flag = false;
     bool stay = false;
-    
+    public player hash;
     string player_name;
-    
+    TMPro.TextMeshProUGUI text;
     Quaternion rotation;
-    public void Initialize(int index_x, int index_y, int limit, string name, Color color, Quaternion rotation)
+    public void Initialize(int index_x, int index_y, int limit, string name, Color color, Quaternion rotation, Variables.player hash)
     {
-        this.index_x        = index_x;
-        this.index_y        = index_y;
-        this.limit          = limit;
-        this.color          = color;
-        this.player_name    = name;
+        this.index_x = index_x;
+        this.index_y = index_y;
+        this.limit = limit;
+        this.color = color;
+        this.player_name = name;
         this.rotation = rotation;
-        this.GetComponent<MeshRenderer>().material.SetColor("_Color", color); 
+        this.hash = hash;
+        this.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
+        Debug.Log("Hash of " + player_name + " is " + hash);
+        setText(hash);
     }
     private void Start()
     {
@@ -33,16 +38,39 @@ public class PlayerScript : MonoBehaviour
         transform.Rotate(rotation.eulerAngles);
         player_movement = 0.5f;
         stun = 0.0f;
-
-
     }
-    enum movement { RIGHT, LEFT, UP, DOWN}
 
+    public void resetText()
+    {
+        text.text = player_name + ":" + points.ToString();
+    }
+    private void setText(player hash)
+    {
+        switch(hash)
+        {
+            case player.ONE:
+                text = GameObject.FindGameObjectWithTag("Player1").GetComponent<TextMeshProUGUI>();
+                text.text = player_name + ":" + points.ToString();
+                break;
+            case player.TWO:
+                text = GameObject.FindGameObjectWithTag("Player2").GetComponent<TextMeshProUGUI>();
+                text.text = player_name + ":" + points.ToString();
+                break;
+            case player.THREE:
+                text = GameObject.FindGameObjectWithTag("Player3").GetComponent<TextMeshProUGUI>();
+                text.text = player_name + ":" + points.ToString();
+                break;
+            case player.FOUR:
+                text = GameObject.FindGameObjectWithTag("Player4").GetComponent<TextMeshProUGUI>();
+                text.text = player_name + ":" + points.ToString();
+                break;
+        }
+    }
     void FixedUpdate()
     {
         time_start += Time.deltaTime;
         movement_random = ((int)Random.Range(0, 4));
-        if(time_start > player_movement + stun)
+        if (time_start > player_movement + stun)
         {
             //Debug.Log("Player Movement " + movement_random);
             switch (movement_random)
@@ -53,10 +81,10 @@ public class PlayerScript : MonoBehaviour
                         //transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                         //transform.Rotate(Vector3.up, 90.0f, Space.World);
                         //Moving();
-                        move(movement.RIGHT);
+                        move();
                         stay = false;
-                        
-                    } 
+
+                    }
                     break;
                 case 1:
                     if (canMove(movement.LEFT))
@@ -66,9 +94,9 @@ public class PlayerScript : MonoBehaviour
                         //transform.rotation = Quaternion.Euler(0.0f,90.0f, 0.0f);
                         //transform.Rotate(Vector3.up, -90.0f, Space.World);
                         //Moving();
-                        move(movement.LEFT);
+                        move();
                         stay = false;
-                        
+
                     }
                     break;
                 case 2:
@@ -79,7 +107,7 @@ public class PlayerScript : MonoBehaviour
                         //transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                         //Moving();
                         stay = false;
-                        move(movement.DOWN); 
+                        move();
                     }
                     break;
                 case 3:
@@ -91,63 +119,33 @@ public class PlayerScript : MonoBehaviour
                         //transform.Rotate(Vector3.up, 180.0f, Space.World);
                         //Moving();
                         stay = false;
-                        move(movement.UP);
-                        
-                    }    
+                        move();
+
+                    }
                     break;
             }
-            if(stay)
+            if (stay)
             {
                 //Moving();
-                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().changeColor(color);
+                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().BelongsTo( color, hash);
                 PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().use();
-                
+
             }
             time_start = 0.0f;
             stay = true;
         }
-        /*
-        mensaje = "Stun equals {0} time {1}";
-        string msj = string.Format(mensaje, stun, time_start);
-        Debug.Log(msj);
-        */
-
     }
     
-    private void move(movement DIRECTION)
+    private void move()
     {
+        //Reset times variables
         time_start = 0.0f;
         stun = 0.0f;
-        switch (DIRECTION)
-        {
-            case movement.DOWN:
-                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().changeColor(color);
-                transform.LookAt(PlaneObject.PositionPlaform(index_x, index_y));
-                transform.position = PlaneObject.PositionPlaform(index_x, index_y);
-                
-                break;
-            case movement.UP:
-                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().changeColor(color);
-                transform.LookAt(PlaneObject.PositionPlaform(index_x, index_y));
-                transform.position = PlaneObject.PositionPlaform(index_x, index_y);
-                
-                break;
-            case movement.RIGHT:
-                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().changeColor(color);
-                transform.LookAt(PlaneObject.PositionPlaform(index_x, index_y));
-                transform.position = PlaneObject.PositionPlaform(index_x, index_y);
-                
-                break;
-            case movement.LEFT:
-                PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().changeColor(color);
-                transform.LookAt(PlaneObject.PositionPlaform(index_x, index_y));
-                transform.position = PlaneObject.PositionPlaform(index_x, index_y);
-                break;
-            default:
-                Debug.Log("Error en la función move");
-                break;
-        }
+        PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().BelongsTo(color, hash);
+        transform.LookAt(PlaneObject.PositionPlaform(index_x, index_y));
+        transform.position = PlaneObject.PositionPlaform(index_x, index_y);
     }
+
     private bool canMove(movement DIRECTION)
     {
         bool flag = false;
@@ -159,9 +157,9 @@ public class PlayerScript : MonoBehaviour
         int save_x = index_x; int save_y = index_y;
         switch (DIRECTION)
         {
-            
+
             case movement.RIGHT:
-                flag = index_x < limit && !PlaneObject.Planes[index_x + 1, index_y ].GetComponent<PlaneBehavior>().isUsed();
+                flag = index_x < limit && !PlaneObject.Planes[index_x + 1, index_y].GetComponent<PlaneBehavior>().isUsed();
                 if (flag)
                     index_x++;
                 break;
@@ -173,7 +171,7 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case movement.UP:
-                flag = index_y < limit && !PlaneObject.Planes[index_x , index_y + 1].GetComponent<PlaneBehavior>().isUsed();
+                flag = index_y < limit && !PlaneObject.Planes[index_x, index_y + 1].GetComponent<PlaneBehavior>().isUsed();
                 if (flag)
                     index_y++;
                 break;
@@ -184,7 +182,7 @@ public class PlayerScript : MonoBehaviour
                     index_y--;
                 break;
         }
-        if(flag)
+        if (flag)
         {
             PlaneObject.Planes[save_x, save_y].GetComponent<PlaneBehavior>().vacate();
             PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().use();
@@ -198,71 +196,15 @@ public class PlayerScript : MonoBehaviour
         string msj = "Player {0} is moving in ({1}, {2}) ";
         Debug.Log(string.Format(msj, player_name, index_x, index_y));
     }
-    /*
-    public void OnTriggerEnter(Collider other)
+   public void Buff()
+   {
+        StartCoroutine(BuffSpeed());
+   }
+    IEnumerator BuffSpeed()
     {
-        string msg = "Player: {0} collide with {1}";
-        //string msg_formated = string.Format(msg, name, other.gameObject.name);
-        string msg_formated;
-        if (other.gameObject.Equals( GameObject.FindGameObjectWithTag("Star").gameObject))
-        {
-            msg_formated = string.Format(msg, this.player_name, "Star");
-            ObjectsGenerator.RestStar();
-            
-        } else if (other.gameObject.Equals(GameObject.FindGameObjectWithTag("Speed").gameObject))
-        {
-            ObjectsGenerator.RestItem();
-            msg_formated = string.Format(msg, this.player_name, "Speed");
-        }else
-        {
-            msg_formated = string.Format(msg, this.player_name, "Nothing");
-        }
-        Debug.Log(msg_formated);
-        Destroy(other.gameObject);
+        float first_speed = player_movement;
+        player_movement = 0.25f;
+        yield return new WaitForSeconds(5);
+        player_movement = first_speed;
     }
-    */
 }
-
-/*
-IEnumerator stunPlayer()
-{
-    while(true)
-    {
-        if(stun)
-        {
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                if (canMove(movement.RIGHT))
-                    move(movement.RIGHT);
-                stun = false;
-            }
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                if (canMove(movement.LEFT))
-                    move(movement.LEFT);
-                stun = false;
-            }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                if (canMove(movement.UP))
-                    move(movement.UP);
-                stun = false;
-            }
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                if (canMove(movement.DOWN))
-                    move(movement.DOWN);
-                stun = false;
-            }
-        }
-        if(!stun)
-        {
-            mensaje = "Stun equals {0} time {1}";
-            string msj = string.Format(mensaje, stun, Time.deltaTime);
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-}
-}
-*/

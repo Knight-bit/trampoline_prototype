@@ -5,14 +5,11 @@ using UnityEngine;
 public class Star : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        ObjectsGenerator.RestStar();
+        other.gameObject.GetComponent<PlayerScript>().points += MainManager.GivePoints(other.gameObject.GetComponent<PlayerScript>().hash);
+        other.gameObject.GetComponent<PlayerScript>().resetText();
+        Destroy(gameObject);
     }
 }
