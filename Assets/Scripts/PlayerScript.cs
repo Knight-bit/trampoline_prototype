@@ -6,8 +6,9 @@ using TMPro;
 
 public class PlayerScript : MonoBehaviour
 {
-
     // Update is called once per frame
+    public ParticleSystem particle;
+    //private ParticleSystemRenderer particle_renderer;
     int index_x, index_y, limit, movement_random;
     public int points = 0;
     float time_start, stun;
@@ -31,6 +32,14 @@ public class PlayerScript : MonoBehaviour
         this.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
         Debug.Log("Hash of " + player_name + " is " + hash);
         setText(hash);
+        SetParticles();
+        
+    }
+    private void SetParticles()
+    {
+        particle.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", color);
+        
+
     }
     private void Start()
     {
@@ -39,7 +48,6 @@ public class PlayerScript : MonoBehaviour
         player_movement = 0.5f;
         stun = 0.0f;
     }
-
     public void resetText()
     {
         text.text = player_name + ":" + points.ToString();
@@ -72,15 +80,11 @@ public class PlayerScript : MonoBehaviour
         movement_random = ((int)Random.Range(0, 4));
         if (time_start > player_movement + stun)
         {
-            //Debug.Log("Player Movement " + movement_random);
             switch (movement_random)
             {
                 case 0:
                     if (canMove(movement.RIGHT))
                     {
-                        //transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-                        //transform.Rotate(Vector3.up, 90.0f, Space.World);
-                        //Moving();
                         move();
                         stay = false;
 
@@ -89,11 +93,6 @@ public class PlayerScript : MonoBehaviour
                 case 1:
                     if (canMove(movement.LEFT))
                     {
-                        //transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
-                        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0.0f, -90.0f, 0.0f), 0);
-                        //transform.rotation = Quaternion.Euler(0.0f,90.0f, 0.0f);
-                        //transform.Rotate(Vector3.up, -90.0f, Space.World);
-                        //Moving();
                         move();
                         stay = false;
 
@@ -102,10 +101,6 @@ public class PlayerScript : MonoBehaviour
                 case 2:
                     if (canMove(movement.DOWN))
                     {
-                        //transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0.0f, 180.0f, 0.0f), 0);
-                        //transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                        //Moving();
                         stay = false;
                         move();
                     }
@@ -113,11 +108,6 @@ public class PlayerScript : MonoBehaviour
                 case 3:
                     if (canMove(movement.UP))
                     {
-                        //transform.rotation = Quaternion.Euler(0.0f, .0f, 0.0f);
-                        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0.0f, 0.0f, 0.0f), 0);
-                        //transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                        //transform.Rotate(Vector3.up, 180.0f, Space.World);
-                        //Moving();
                         stay = false;
                         move();
 
@@ -187,8 +177,6 @@ public class PlayerScript : MonoBehaviour
             PlaneObject.Planes[save_x, save_y].GetComponent<PlaneBehavior>().vacate();
             PlaneObject.Planes[index_x, index_y].GetComponent<PlaneBehavior>().use();
         }
-
-        //Debug.Log(string.Format(mensaje, flag, DIRECTION, index_x, index_y, limit));
         return flag;
     }
     public void Moving()
