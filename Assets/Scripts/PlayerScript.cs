@@ -7,7 +7,7 @@ using TMPro;
 public class PlayerScript : MonoBehaviour
 {
     // Update is called once per frame
-    public ParticleSystem particle;
+    //public ParticleSystem particle;
     //private ParticleSystemRenderer particle_renderer;
     int index_x, index_y, limit, movement_random;
     public int points = 0;
@@ -29,15 +29,15 @@ public class PlayerScript : MonoBehaviour
         this.player_name = name;
         this.rotation = rotation;
         this.hash = hash;
-        this.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
+        this.GetComponent<SkinnedMeshRenderer>().material.SetColor("_Color", color);
         Debug.Log("Hash of " + player_name + " is " + hash);
         setText(hash);
-        SetParticles();
+        //SetParticles();
         
     }
     private void SetParticles()
     {
-        particle.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", color);
+        //particle.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", color);
         
 
     }

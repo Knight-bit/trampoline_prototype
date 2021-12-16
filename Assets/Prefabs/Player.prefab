@@ -334,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5ba56fbc382e3448817c81beb41f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particle: {fileID: 3951612597994770174, guid: 3648ad2d1ea98b141aa17d5b4f757750, type: 3}
   points: 0
   hash: 0
 --- !u!54 &5161788020908549621
